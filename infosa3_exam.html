@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TE — Information System Analyst III | Online Exam</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf7f2;
+    --surface: #ffffff;
+    --surface2: #f4f0ea;
+    --border: #e5ddd0;
+    --accent: #1a3a5c;
+    --accent2: #c0392b;
+    --gold: #b8860b;
+    --success: #2e7d5e;
+    --text: #1a1a1a;
+    --text-muted: #7a6e62;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+    --serif: 'Crimson Pro', serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:var(--sans); min-height:100vh; }
+
+  /* COVER */
+  #cover {
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    padding:2rem;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 39px, #e8e0d4 39px, #e8e0d4 40px),
+                      repeating-linear-gradient(90deg, transparent, transparent 39px, #e8e0d4 39px, #e8e0d4 40px);
+  }
+  .cover-box {
+    max-width:540px; width:100%; background:var(--surface);
+    border:1px solid var(--border); border-radius:4px;
+    padding:3rem 3rem;
+    box-shadow:0 4px 40px rgba(26,58,92,.08), 8px 8px 0 #e5ddd0;
+  }
+  .cover-seal {
+    width:56px; height:56px; border:3px double var(--accent);
+    border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:.65rem; color:var(--accent);
+    font-weight:500; margin-bottom:1.5rem; letter-spacing:.05em;
+  }
+  .cover-eyebrow {
+    font-family:var(--mono); font-size:.6rem; letter-spacing:.2em;
+    color:var(--text-muted); text-transform:uppercase; margin-bottom:.75rem;
+  }
+  h1.cover-title {
+    font-family:var(--serif); font-size:2.1rem; font-weight:600;
+    line-height:1.15; margin-bottom:.4rem; color:var(--accent);
+  }
+  .cover-divider { width:48px; height:3px; background:var(--gold); margin:1.25rem 0; }
+  .cover-sub { font-size:.88rem; color:var(--text-muted); margin-bottom:1.75rem; }
+  .cover-rules {
+    border:1px solid var(--border); border-radius:4px;
+    padding:1rem 1.25rem; margin-bottom:1.75rem;
+    background:var(--surface2);
+  }
+  .cover-rules p {
+    font-size:.82rem; color:var(--text-muted); margin-bottom:.4rem;
+    display:flex; gap:.6rem; align-items:flex-start;
+  }
+  .cover-rules p:last-child { margin-bottom:0; }
+  .rule-num {
+    font-family:var(--mono); font-size:.6rem; background:var(--accent);
+    color:#fff; border-radius:2px; padding:.1rem .35rem; flex-shrink:0; margin-top:1px;
+  }
+  label.field-label {
+    display:block; font-size:.72rem; font-weight:500; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--text-muted); margin-bottom:.4rem;
+  }
+  .cover-input {
+    width:100%; padding:.85rem 1rem; background:var(--surface2);
+    border:1px solid var(--border); border-radius:4px; color:var(--text);
+    font-family:var(--sans); font-size:.95rem; margin-bottom:1.5rem;
+    transition:border-color .2s;
+  }
+  .cover-input:focus { outline:none; border-color:var(--accent); }
+  .btn-begin {
+    width:100%; padding:1rem; background:var(--accent);
+    border:none; border-radius:4px; color:#fff;
+    font-family:var(--mono); font-size:.78rem; font-weight:500;
+    letter-spacing:.12em; cursor:pointer; text-transform:uppercase;
+    transition:background .2s;
+  }
+  .btn-begin:hover { background:#0f2847; }
+
+  /* HEADER */
+  #exam { display:none; min-height:100vh; flex-direction:column; }
+  .exam-header {
+    position:sticky; top:0; z-index:100;
+    background:var(--accent); padding:0 2.5rem;
+    display:flex; align-items:center; justify-content:space-between;
+    height:52px;
+  }
+  .hdr-title { font-family:var(--serif); font-size:.95rem; color:rgba(255,255,255,.9); font-style:italic; }
+  .hdr-meta { display:flex; align-items:center; gap:1.25rem; }
+  .hdr-name { font-family:var(--mono); font-size:.68rem; color:rgba(255,255,255,.7); }
+  #warn-badge {
+    font-family:var(--mono); font-size:.65rem; padding:.2rem .55rem;
+    border-radius:2px; background:rgba(255,255,255,.15); color:rgba(255,255,255,.85);
+    border:1px solid rgba(255,255,255,.2);
+  }
+  .prog-bar { height:3px; background:var(--border); }
+  .prog-fill { height:100%; background:var(--gold); transition:width .3s; }
+
+  .exam-body { max-width:780px; margin:0 auto; padding:3rem 2rem; width:100%; }
+
+  /* SECTION */
+  .sec-head {
+    font-family:var(--serif); font-size:.8rem; letter-spacing:.15em; text-transform:uppercase;
+    color:var(--text-muted); margin:3rem 0 1.5rem; padding-bottom:.75rem;
+    border-bottom:2px solid var(--border); display:flex; align-items:center; justify-content:space-between;
+  }
+  .sec-pts { font-family:var(--mono); font-size:.65rem; color:var(--gold); }
+
+  /* QUESTION CARD */
+  .q-card {
+    border-left:3px solid var(--border); padding:1.5rem 1.5rem 1.5rem 1.75rem;
+    margin-bottom:.75rem; background:var(--surface);
+    border-radius:0 4px 4px 0; transition:border-color .2s;
+    box-shadow:0 1px 4px rgba(0,0,0,.04);
+  }
+  .q-card.answered { border-left-color:var(--accent); }
+  .q-num { font-family:var(--mono); font-size:.62rem; color:var(--text-muted); margin-bottom:.6rem; letter-spacing:.08em; }
+  .q-text { font-family:var(--serif); font-size:1rem; line-height:1.65; margin-bottom:1.1rem; }
+  .q-code {
+    background:#1e2836; border-radius:4px; padding:.85rem 1rem;
+    font-family:var(--mono); font-size:.76rem; color:#7dd3fc;
+    line-height:1.7; margin-bottom:1.1rem; overflow-x:auto; white-space:pre;
+  }
+  .options { display:flex; flex-direction:column; gap:.4rem; }
+  .opt {
+    display:flex; align-items:flex-start; gap:.7rem;
+    padding:.65rem .85rem; border-radius:3px;
+    border:1px solid var(--border); cursor:pointer;
+    font-size:.88rem; line-height:1.4; transition:all .15s;
+    background:var(--surface);
+  }
+  .opt:hover { background:var(--surface2); border-color:#c5bdb3; }
+  .opt input { display:none; }
+  .opt-dot {
+    width:16px; height:16px; border-radius:50%; border:2px solid var(--border);
+    flex-shrink:0; margin-top:1px; transition:all .15s;
+  }
+  .opt:has(input:checked) { background:#f0f4f9; border-color:var(--accent); }
+  .opt:has(input:checked) .opt-dot { border-color:var(--accent); background:var(--accent); box-shadow:inset 0 0 0 3px #fff; }
+
+  /* OPEN ENDED */
+  .open-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:4px; padding:1.75rem; margin-bottom:.75rem;
+    box-shadow:0 1px 4px rgba(0,0,0,.04);
+  }
+  .open-card .q-text { margin-bottom:.85rem; }
+  .open-card label { margin-top:.6rem; }
+  .open-card textarea {
+    width:100%; min-height:90px; background:var(--surface2);
+    border:1px solid var(--border); border-radius:3px; color:var(--text);
+    font-family:var(--mono); font-size:.8rem; padding:.7rem .9rem;
+    resize:vertical; margin-top:.4rem; transition:border-color .2s;
+  }
+  .open-card textarea:focus { outline:none; border-color:var(--accent); }
+  .pts-tag { font-family:var(--mono); font-size:.6rem; color:var(--gold); margin-left:.5rem; }
+
+  /* ASSESSMENT */
+  .assess-wrap {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:4px; overflow:hidden; margin-bottom:.75rem;
+    box-shadow:0 1px 4px rgba(0,0,0,.04);
+  }
+  .assess-wrap table { width:100%; border-collapse:collapse; font-size:.82rem; }
+  .assess-wrap th {
+    background:var(--accent); color:rgba(255,255,255,.85);
+    padding:.6rem .5rem; font-family:var(--mono); font-size:.58rem; letter-spacing:.06em;
+    text-align:center; border-bottom:2px solid var(--border);
+  }
+  .assess-wrap th:first-child { text-align:left; padding-left:1rem; }
+  .assess-wrap td { padding:.5rem; text-align:center; border-bottom:1px solid var(--border); }
+  .assess-wrap td:first-child { text-align:left; padding-left:1rem; color:var(--text-muted); font-size:.82rem; }
+  .assess-wrap tr:last-child td { border-bottom:none; }
+  .assess-wrap tr:nth-child(even) td { background:var(--surface2); }
+  .assess-wrap input[type=radio] { accent-color:var(--accent); transform:scale(1.1); }
+
+  /* SUBMIT */
+  .submit-wrap { padding:2rem 0; border-top:2px solid var(--border); margin-top:2.5rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
+  .submit-note { font-size:.82rem; color:var(--text-muted); max-width:400px; line-height:1.5; }
+  .btn-sub {
+    padding:.85rem 2.25rem; background:var(--accent2);
+    border:none; border-radius:4px; color:#fff;
+    font-family:var(--mono); font-size:.75rem; font-weight:500;
+    letter-spacing:.1em; cursor:pointer; text-transform:uppercase;
+    transition:background .2s;
+  }
+  .btn-sub:hover { background:#a93226; }
+
+  /* RESULT */
+  #result {
+    display:none; min-height:100vh;
+    background: var(--bg); align-items:center; justify-content:center; padding:2rem;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 39px, #e8e0d4 39px, #e8e0d4 40px),
+                      repeating-linear-gradient(90deg, transparent, transparent 39px, #e8e0d4 39px, #e8e0d4 40px);
+  }
+  .result-card {
+    max-width:500px; width:100%; background:var(--surface);
+    border:1px solid var(--border); border-radius:4px;
+    padding:3rem; text-align:center;
+    box-shadow:0 4px 40px rgba(26,58,92,.08), 8px 8px 0 #e5ddd0;
+  }
+  .res-eyebrow { font-family:var(--mono); font-size:.6rem; letter-spacing:.2em; color:var(--text-muted); margin-bottom:1rem; text-transform:uppercase; }
+  .res-score { font-family:var(--serif); font-size:4rem; font-weight:600; line-height:1; margin-bottom:.25rem; }
+  .res-score.pass { color:var(--success); }
+  .res-score.fail { color:var(--accent2); }
+  .res-label { font-family:var(--mono); font-size:.65rem; color:var(--text-muted); margin-bottom:1.5rem; letter-spacing:.1em; text-transform:uppercase; }
+  .res-name { font-family:var(--serif); font-size:1.4rem; font-weight:600; color:var(--accent); margin-bottom:.3rem; }
+  .res-sub { font-size:.83rem; color:var(--text-muted); margin-bottom:1.75rem; }
+  .res-stats { display:grid; grid-template-columns:1fr 1fr; gap:.6rem; margin-bottom:1.75rem; }
+  .rs { background:var(--surface2); border-radius:3px; padding:.85rem; border:1px solid var(--border); }
+  .rs-l { font-size:.68rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:.2rem; }
+  .rs-v { font-family:var(--mono); font-size:1rem; font-weight:500; color:var(--accent); }
+  .res-msg { font-size:.85rem; color:var(--text-muted); line-height:1.65; font-family:var(--serif); font-style:italic; }
+  .res-footer { font-family:var(--mono); font-size:.65rem; color:var(--text-muted); margin-top:1.25rem; }
+
+  /* OVERLAY */
+  #overlay {
+    display:none; position:fixed; inset:0; z-index:999;
+    background:rgba(250,247,242,.97); align-items:center; justify-content:center;
+    flex-direction:column; text-align:center; padding:2rem;
+  }
+  .ov-stamp {
+    font-family:var(--serif); font-size:2rem; color:var(--accent2);
+    border:4px solid var(--accent2); display:inline-block;
+    padding:.25rem 1.25rem; transform:rotate(-6deg); margin-bottom:1.25rem;
+    letter-spacing:.1em; font-weight:600;
+  }
+  .ov-title { font-family:var(--mono); font-size:.8rem; color:var(--accent); letter-spacing:.12em; margin-bottom:.75rem; }
+  .ov-msg { font-family:var(--serif); font-size:1rem; color:var(--text-muted); line-height:1.6; max-width:420px; }
+
+  /* TOAST */
+  #toast {
+    position:fixed; top:62px; left:50%; transform:translateX(-50%);
+    background:var(--accent2); color:#fff;
+    padding:.55rem 1.25rem; border-radius:3px;
+    font-family:var(--mono); font-size:.7rem; z-index:500;
+    opacity:0; transition:opacity .3s; pointer-events:none; white-space:nowrap;
+  }
+  #toast.show { opacity:1; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div id="cover">
+  <div class="cover-box">
+    <div class="cover-seal">TE</div>
+    <div class="cover-eyebrow">Technical Examination</div>
+    <h1 class="cover-title">Information System Analyst III</h1>
+    <div class="cover-divider"></div>
+    <p class="cover-sub">TE — INFOSA III &nbsp;·&nbsp; Online Assessment Platform</p>
+    <div class="cover-rules">
+      <p><span class="rule-num">1</span>20 multiple-choice questions (1 pt each) + 2 open-ended (5 pts total)</p>
+      <p><span class="rule-num">2</span>All answers are recorded automatically upon submission.</p>
+      <p><span class="rule-num">3</span>Tab/window switching is monitored. Three violations trigger automatic submission.</p>
+      <p><span class="rule-num">4</span>Results are sent to HR Admin and recorded in the dashboard.</p>
+    </div>
+    <label class="field-label" for="examName">Full Name (Last, First, Middle Initial)</label>
+    <input type="text" id="examName" class="cover-input" placeholder="e.g. Santos, Maria L." autocomplete="off">
+    <button class="btn-begin" onclick="startExam()">Begin Examination →</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- OVERLAY -->
+<div id="overlay">
+  <div class="ov-stamp">TERMINATED</div>
+  <div class="ov-title">Exam Auto-Submitted</div>
+  <div class="ov-msg">You have exceeded the maximum number of tab or window switches permitted. Your examination has been automatically submitted and recorded.</div>
+</div>
+
+<!-- EXAM -->
+<div id="exam">
+  <header class="exam-header">
+    <span class="hdr-title">TE — Information System Analyst III</span>
+    <div class="hdr-meta">
+      <span class="hdr-name" id="headerName"></span>
+      <span id="warn-badge">Violations: 0 / 3</span>
+    </div>
+  </header>
+  <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+
+  <div class="exam-body">
+    <div class="sec-head">
+      Part I — Multiple Choice
+      <span class="sec-pts">20 items · 1 pt each</span>
+    </div>
+
+    <!-- Q1 -->
+    <div class="q-card" id="qc1">
+      <div class="q-num">QUESTION 01 OF 20</div>
+      <div class="q-text">When evaluating a legacy system for modernization, which strategy involves moving the application to the cloud with minimal changes to the code?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q1" value="A"><span class="opt-dot"></span>A. Refactoring</label>
+        <label class="opt"><input type="radio" name="q1" value="B"><span class="opt-dot"></span>B. Replatforming</label>
+        <label class="opt"><input type="radio" name="q1" value="C"><span class="opt-dot"></span>C. Rehosting (Lift and Shift)</label>
+        <label class="opt"><input type="radio" name="q1" value="D"><span class="opt-dot"></span>D. Retiring</label>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-card" id="qc2">
+      <div class="q-num">QUESTION 02 OF 20</div>
+      <div class="q-text">Which principle of the SOLID design pattern states that software entities should be open for extension but closed for modification?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q2" value="A"><span class="opt-dot"></span>A. Single Responsibility Principle</label>
+        <label class="opt"><input type="radio" name="q2" value="B"><span class="opt-dot"></span>B. Interface Segregation Principle</label>
+        <label class="opt"><input type="radio" name="q2" value="C"><span class="opt-dot"></span>C. Liskov Substitution Principle</label>
+        <label class="opt"><input type="radio" name="q2" value="D"><span class="opt-dot"></span>D. Open-Closed Principle</label>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-card" id="qc3">
+      <div class="q-num">QUESTION 03 OF 20</div>
+      <div class="q-text">In a distributed system, what is the primary purpose of a "Circuit Breaker" pattern?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q3" value="A"><span class="opt-dot"></span>A. To encrypt all outgoing traffic.</label>
+        <label class="opt"><input type="radio" name="q3" value="B"><span class="opt-dot"></span>B. To prevent a failure in one service from cascading and bringing down the entire system.</label>
+        <label class="opt"><input type="radio" name="q3" value="C"><span class="opt-dot"></span>C. To increase the speed of database transactions.</label>
+        <label class="opt"><input type="radio" name="q3" value="D"><span class="opt-dot"></span>D. To load balance traffic between multiple data centers.</label>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="q-card" id="qc4">
+      <div class="q-num">QUESTION 04 OF 20</div>
+      <div class="q-text">As a Senior Analyst, you are performing a "Gap Analysis." What does this specifically measure?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q4" value="A"><span class="opt-dot"></span>A. The difference between the current state (As-Is) and the future state (To-Be).</label>
+        <label class="opt"><input type="radio" name="q4" value="B"><span class="opt-dot"></span>B. The speed difference between two different database engines.</label>
+        <label class="opt"><input type="radio" name="q4" value="C"><span class="opt-dot"></span>C. The security vulnerabilities found during a penetration test.</label>
+        <label class="opt"><input type="radio" name="q4" value="D"><span class="opt-dot"></span>D. The time it takes for a user to complete a single task.</label>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="q-card" id="qc5">
+      <div class="q-num">QUESTION 05 OF 20</div>
+      <div class="q-text">Which document acts as a formal agreement between a service provider and a client regarding the expected level of service, such as 99.9% uptime?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q5" value="A"><span class="opt-dot"></span>A. Software Requirement Specification (SRS)</label>
+        <label class="opt"><input type="radio" name="q5" value="B"><span class="opt-dot"></span>B. Service Level Agreement (SLA)</label>
+        <label class="opt"><input type="radio" name="q5" value="C"><span class="opt-dot"></span>C. Business Case Document</label>
+        <label class="opt"><input type="radio" name="q5" value="D"><span class="opt-dot"></span>D. Project Charter</label>
+      </div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="q-card" id="qc6">
+      <div class="q-num">QUESTION 06 OF 20</div>
+      <div class="q-text">What is the most significant disadvantage of a "Shared Database" pattern in a Microservices architecture?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q6" value="A"><span class="opt-dot"></span>A. It makes SQL queries too easy to write.</label>
+        <label class="opt"><input type="radio" name="q6" value="B"><span class="opt-dot"></span>B. It prevents the use of primary keys.</label>
+        <label class="opt"><input type="radio" name="q6" value="C"><span class="opt-dot"></span>C. It reduces the cost of cloud storage.</label>
+        <label class="opt"><input type="radio" name="q6" value="D"><span class="opt-dot"></span>D. It creates tight coupling between services, making independent deployments difficult.</label>
+      </div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="q-card" id="qc7">
+      <div class="q-num">QUESTION 07 OF 20</div>
+      <div class="q-text">In the context of the NIS2 Directive, which "Senior" responsibility is most critical during the system design phase?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q7" value="A"><span class="opt-dot"></span>A. Writing the CSS for the user interface.</label>
+        <label class="opt"><input type="radio" name="q7" value="B"><span class="opt-dot"></span>B. Ensuring "Security by Design" and supply chain security are documented in the requirements.</label>
+        <label class="opt"><input type="radio" name="q7" value="C"><span class="opt-dot"></span>C. Choosing the color of the company logo.</label>
+        <label class="opt"><input type="radio" name="q7" value="D"><span class="opt-dot"></span>D. Monitoring the daily attendance of the development team.</label>
+      </div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="q-card" id="qc8">
+      <div class="q-num">QUESTION 08 OF 20</div>
+      <div class="q-text">Which of the following best describes "Data Sovereignty"?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q8" value="A"><span class="opt-dot"></span>A. The legal requirement that data is subject to the laws of the country in which it is physically located.</label>
+        <label class="opt"><input type="radio" name="q8" value="B"><span class="opt-dot"></span>B. The ability of a database to recover from a crash.</label>
+        <label class="opt"><input type="radio" name="q8" value="C"><span class="opt-dot"></span>C. The process of converting unstructured data into structured data.</label>
+        <label class="opt"><input type="radio" name="q8" value="D"><span class="opt-dot"></span>D. A technique used to compress large video files.</label>
+      </div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="q-card" id="qc9">
+      <div class="q-num">QUESTION 09 OF 20</div>
+      <div class="q-text">When modeling system behavior, which UML diagram is best for showing the different states an object passes through in response to events?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q9" value="A"><span class="opt-dot"></span>A. Class Diagram</label>
+        <label class="opt"><input type="radio" name="q9" value="B"><span class="opt-dot"></span>B. State Machine Diagram</label>
+        <label class="opt"><input type="radio" name="q9" value="C"><span class="opt-dot"></span>C. Component Diagram</label>
+        <label class="opt"><input type="radio" name="q9" value="D"><span class="opt-dot"></span>D. Package Diagram</label>
+      </div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="q-card" id="qc10">
+      <div class="q-num">QUESTION 10 OF 20</div>
+      <div class="q-text">What is the primary goal of "Normalization" up to the Third Normal Form (3NF)?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q10" value="A"><span class="opt-dot"></span>A. To make the database take up as much space as possible.</label>
+        <label class="opt"><input type="radio" name="q10" value="B"><span class="opt-dot"></span>B. To allow users to enter data without any validation.</label>
+        <label class="opt"><input type="radio" name="q10" value="C"><span class="opt-dot"></span>C. To ensure that every non-key column is dependent only on the primary key, reducing data redundancy.</label>
+        <label class="opt"><input type="radio" name="q10" value="D"><span class="opt-dot"></span>D. To combine all tables into one single large spreadsheet.</label>
+      </div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="q-card" id="qc11">
+      <div class="q-num">QUESTION 11 OF 20</div>
+      <div class="q-text">A junior developer under your supervision consistently misses deadlines. As a Senior Analyst, what is your first step in addressing this?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q11" value="A"><span class="opt-dot"></span>A. Report them immediately to the Department Head for disciplinary action.</label>
+        <label class="opt"><input type="radio" name="q11" value="B"><span class="opt-dot"></span>B. Reassign their tasks to a more experienced developer without telling them.</label>
+        <label class="opt"><input type="radio" name="q11" value="C"><span class="opt-dot"></span>C. Conduct a one-on-one meeting to identify if the issue is a lack of technical skill, unclear requirements, or external blockers.</label>
+        <label class="opt"><input type="radio" name="q11" value="D"><span class="opt-dot"></span>D. Ignore it as long as the project as a whole is on track.</label>
+      </div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="q-card" id="qc12">
+      <div class="q-num">QUESTION 12 OF 20</div>
+      <div class="q-text">Which management style is often most effective in a high-performing IT team where members are highly skilled and self-motivated?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q12" value="A"><span class="opt-dot"></span>A. Democratic/Consultative (Involving the team in decision-making while providing clear goals).</label>
+        <label class="opt"><input type="radio" name="q12" value="B"><span class="opt-dot"></span>B. Autocratic (Telling everyone exactly what to do and how).</label>
+        <label class="opt"><input type="radio" name="q12" value="C"><span class="opt-dot"></span>C. Laissez-faire (Leaving the team entirely alone with no guidance).</label>
+        <label class="opt"><input type="radio" name="q12" value="D"><span class="opt-dot"></span>D. Micromanagement (Checking every line of code as it is written).</label>
+      </div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="q-card" id="qc13">
+      <div class="q-num">QUESTION 13 OF 20</div>
+      <div class="q-text">When conducting a "Code Review" for a junior team member, what is the primary goal of your supervision?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q13" value="A"><span class="opt-dot"></span>A. To show them that you are more experienced.</label>
+        <label class="opt"><input type="radio" name="q13" value="B"><span class="opt-dot"></span>B. To ensure the code meets project standards and to provide a learning opportunity for the junior.</label>
+        <label class="opt"><input type="radio" name="q13" value="C"><span class="opt-dot"></span>C. To rewrite their code entirely in your own style.</label>
+        <label class="opt"><input type="radio" name="q13" value="D"><span class="opt-dot"></span>D. To find enough mistakes to justify a lower performance rating.</label>
+      </div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="q-card" id="qc14">
+      <div class="q-num">QUESTION 14 OF 20</div>
+      <div class="q-text">You notice a "silo" forming in your team, where only one person knows how a critical system works. What is the best supervisory action to mitigate this risk?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q14" value="A"><span class="opt-dot"></span>A. Promote that person so they never leave the company.</label>
+        <label class="opt"><input type="radio" name="q14" value="B"><span class="opt-dot"></span>B. Hire a second person with the exact same skills and keep them separated.</label>
+        <label class="opt"><input type="radio" name="q14" value="C"><span class="opt-dot"></span>C. Delete the system and start over so everyone can learn it together.</label>
+        <label class="opt"><input type="radio" name="q14" value="D"><span class="opt-dot"></span>D. Implement cross-training and mandatory documentation sharing.</label>
+      </div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="q-card" id="qc15">
+      <div class="q-num">QUESTION 15 OF 20</div>
+      <div class="q-text">Which of the following is a key component of "Situational Leadership"?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q15" value="A"><span class="opt-dot"></span>A. Using the same management style for every employee regardless of their experience.</label>
+        <label class="opt"><input type="radio" name="q15" value="B"><span class="opt-dot"></span>B. Adjusting your level of direction and support based on the competence and commitment of the individual.</label>
+        <label class="opt"><input type="radio" name="q15" value="C"><span class="opt-dot"></span>C. Letting the team vote on who should be the leader each week.</label>
+        <label class="opt"><input type="radio" name="q15" value="D"><span class="opt-dot"></span>D. Only providing feedback during the annual performance review.</label>
+      </div>
+    </div>
+
+    <!-- Q16 -->
+    <div class="q-card" id="qc16">
+      <div class="q-num">QUESTION 16 OF 20</div>
+      <div class="q-text">A conflict arises between a System Analyst and a Developer regarding a feature's design. As their supervisor, how should you intervene?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q16" value="A"><span class="opt-dot"></span>A. Side with the Analyst because they are "higher" in the design chain.</label>
+        <label class="opt"><input type="radio" name="q16" value="B"><span class="opt-dot"></span>B. Tell them to figure it out themselves and stop bothering you.</label>
+        <label class="opt"><input type="radio" name="q16" value="C"><span class="opt-dot"></span>C. Facilitate a technical discussion to evaluate both options against the project's functional requirements and technical constraints.</label>
+        <label class="opt"><input type="radio" name="q16" value="D"><span class="opt-dot"></span>D. Flip a coin to ensure fairness.</label>
+      </div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="q-card" id="qc17">
+      <div class="q-num">QUESTION 17 OF 20</div>
+      <div class="q-text">What is "Burnout" in a technical team, and how can a supervisor prevent it?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q17" value="A"><span class="opt-dot"></span>A. It is when a computer overheats; prevent it by buying better fans.</label>
+        <label class="opt"><input type="radio" name="q17" value="B"><span class="opt-dot"></span>B. It is emotional and physical exhaustion caused by prolonged stress; prevent it by managing workloads and encouraging work-life balance.</label>
+        <label class="opt"><input type="radio" name="q17" value="C"><span class="opt-dot"></span>C. It is when a developer works too fast; prevent it by giving them more work.</label>
+        <label class="opt"><input type="radio" name="q17" value="D"><span class="opt-dot"></span>D. It is a type of security breach; prevent it with a firewall.</label>
+      </div>
+    </div>
+
+    <!-- Q18 -->
+    <div class="q-card" id="qc18">
+      <div class="q-num">QUESTION 18 OF 20</div>
+      <div class="q-text">Which of the following is an example of "Constructive Feedback"?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q18" value="A"><span class="opt-dot"></span>A. "I noticed the last three modules had high latency; let's look at how we can optimize the database queries together."</label>
+        <label class="opt"><input type="radio" name="q18" value="B"><span class="opt-dot"></span>B. "Your logic is bad and you need to fix it."</label>
+        <label class="opt"><input type="radio" name="q18" value="C"><span class="opt-dot"></span>C. "You are the worst programmer on this team."</label>
+        <label class="opt"><input type="radio" name="q18" value="D"><span class="opt-dot"></span>D. "Don't worry about your mistakes, someone else will fix them."</label>
+      </div>
+    </div>
+
+    <!-- Q19 -->
+    <div class="q-card" id="qc19">
+      <div class="q-num">QUESTION 19 OF 20</div>
+      <div class="q-text">When delegating a task to a subordinate, what is the most important thing to provide?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q19" value="A"><span class="opt-dot"></span>A. The exact keys they should type on their keyboard.</label>
+        <label class="opt"><input type="radio" name="q19" value="B"><span class="opt-dot"></span>B. Clear objectives, expected outcomes, and the necessary authority/resources to complete the task.</label>
+        <label class="opt"><input type="radio" name="q19" value="C"><span class="opt-dot"></span>C. A list of all their past failures so they don't repeat them.</label>
+        <label class="opt"><input type="radio" name="q19" value="D"><span class="opt-dot"></span>D. No information at all, to see if they are "resourceful."</label>
+      </div>
+    </div>
+
+    <!-- Q20 -->
+    <div class="q-card" id="qc20">
+      <div class="q-num">QUESTION 20 OF 20</div>
+      <div class="q-text">In a "Scrum" or "Agile" environment, what is the supervisor's (or Lead's) role during a daily stand-up?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q20" value="A"><span class="opt-dot"></span>A. To assign new tasks to everyone for the next 8 hours.</label>
+        <label class="opt"><input type="radio" name="q20" value="B"><span class="opt-dot"></span>B. To criticize team members who didn't finish their tasks yesterday.</label>
+        <label class="opt"><input type="radio" name="q20" value="C"><span class="opt-dot"></span>C. To listen for "impediments" (blockers) that are preventing the team from progressing and help remove them.</label>
+        <label class="opt"><input type="radio" name="q20" value="D"><span class="opt-dot"></span>D. To take attendance for HR records.</label>
+      </div>
+    </div>
+
+    <div class="sec-head">
+      Part II — Technical / Scenario Questions
+      <span class="sec-pts">3 items · see pts</span>
+    </div>
+
+    <!-- Q21 -->
+    <div class="q-card" id="qc21">
+      <div class="q-num">QUESTION 21</div>
+      <div class="q-text">What happens if the condition of a <code>while</code> loop is always <code>true</code> and there is no <code>break</code> statement inside?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q21" value="A"><span class="opt-dot"></span>A. The program will crash immediately with a syntax error.</label>
+        <label class="opt"><input type="radio" name="q21" value="B"><span class="opt-dot"></span>B. The loop will skip the first iteration and then stop.</label>
+        <label class="opt"><input type="radio" name="q21" value="C"><span class="opt-dot"></span>C. The program will enter an infinite loop.</label>
+        <label class="opt"><input type="radio" name="q21" value="D"><span class="opt-dot"></span>D. The compiler will automatically fix the loop to run only 100 times.</label>
+      </div>
+    </div>
+
+    <!-- Q22 -->
+    <div class="q-card" id="qc22">
+      <div class="q-num">QUESTION 22</div>
+      <div class="q-text">You are designing a module that monitors a folder for incoming log files from a network firewall. The system must process files continuously, but the number of files generated daily is unpredictable. Which control structure is the most architecturally sound choice for the primary monitoring loop?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q22" value="A"><span class="opt-dot"></span>A. A <code>for</code> loop, because it is more memory-efficient when handling large batches of files.</label>
+        <label class="opt"><input type="radio" name="q22" value="B"><span class="opt-dot"></span>B. A <code>while</code> loop, because the number of iterations is unknown and depends on the external event of a file appearing.</label>
+        <label class="opt"><input type="radio" name="q22" value="C"><span class="opt-dot"></span>C. A <code>foreach</code> loop, to ensure that every file in the directory is processed in a single pass.</label>
+        <label class="opt"><input type="radio" name="q22" value="D"><span class="opt-dot"></span>D. A <code>switch-case</code> statement, to handle different types of firewall logs effectively.</label>
+      </div>
+    </div>
+
+    <!-- Q23 -->
+    <div class="q-card" id="qc23">
+      <div class="q-num">QUESTION 23</div>
+      <div class="q-text">You are supervising the integration of a new mobile app with an existing API. The mobile team needs a new data field in the JSON response, but adding it will break a legacy web application still using the same API. What is the most "Senior" way to handle this?</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q23" value="A"><span class="opt-dot"></span>A. Force the web application team to update their code immediately.</label>
+        <label class="opt"><input type="radio" name="q23" value="B"><span class="opt-dot"></span>B. Tell the mobile team they cannot have the new field.</label>
+        <label class="opt"><input type="radio" name="q23" value="C"><span class="opt-dot"></span>C. Implement API Versioning (e.g., /api/v2/), allowing the mobile app to use the new version while the web app continues on /api/v1/.</label>
+        <label class="opt"><input type="radio" name="q23" value="D"><span class="opt-dot"></span>D. Add the field anyway and hope the web application doesn't crash.</label>
+      </div>
+    </div>
+
+    <!-- Q24 - Code -->
+    <div class="q-card" id="qc24">
+      <div class="q-num">QUESTION 24</div>
+      <div class="q-text">What will be printed to the console?</div>
+      <div class="q-code">int score = 75;
+if (score > 80) {
+    Console.WriteLine("A");
+} else if (score > 70) {
+    Console.WriteLine("B");
+} else {
+    Console.WriteLine("C");
+}</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q24" value="A"><span class="opt-dot"></span>A. A</label>
+        <label class="opt"><input type="radio" name="q24" value="B"><span class="opt-dot"></span>B. B</label>
+        <label class="opt"><input type="radio" name="q24" value="C"><span class="opt-dot"></span>C. C</label>
+        <label class="opt"><input type="radio" name="q24" value="D"><span class="opt-dot"></span>D. Error</label>
+      </div>
+    </div>
+
+    <!-- Q25 - Code -->
+    <div class="q-card" id="qc25">
+      <div class="q-num">QUESTION 25</div>
+      <div class="q-text">Given the script below, what does <code>Calculate(3)</code> return?</div>
+      <div class="q-code">int Calculate(int n) {
+    if (n &lt;= 1) return 1;
+    return n * Calculate(n - 1);
+}</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q25" value="A"><span class="opt-dot"></span>A. 6</label>
+        <label class="opt"><input type="radio" name="q25" value="B"><span class="opt-dot"></span>B. n * Calculate(n - 1)</label>
+        <label class="opt"><input type="radio" name="q25" value="C"><span class="opt-dot"></span>C. 9</label>
+        <label class="opt"><input type="radio" name="q25" value="D"><span class="opt-dot"></span>D. Error</label>
+      </div>
+    </div>
+
+    <div class="sec-head">Part III — Open-Ended <span class="sec-pts">2 items</span></div>
+
+    <div class="open-card">
+      <div class="q-num">QUESTION 26 <span class="pts-tag">2 pts</span></div>
+      <div class="q-text">Write a script that outputs a list of numbers from 5 to 985, excluding any numbers divisible by 10 (e.g., 10, 20, 30, etc.).</div>
+      <label class="field-label">Programming Language</label>
+      <input type="text" id="oe1_lang" class="cover-input" style="margin-bottom:.5rem" placeholder="e.g. Python, C#, JavaScript...">
+      <label class="field-label">Script</label>
+      <textarea id="oe1_script" placeholder="Write your script here..."></textarea>
+    </div>
+
+    <div class="open-card">
+      <div class="q-num">QUESTION 27 <span class="pts-tag">3 pts</span></div>
+      <div class="q-text">Write a SQL query that retrieves all data from the 'TBL_blogpost' table posted between February 1, 2025 and the end of the day on November 30, 2025. Specify if MSSQL, MySQL, PostgreSQL, etc.</div>
+      <label class="field-label">Database</label>
+      <input type="text" id="oe2_db" class="cover-input" style="margin-bottom:.5rem" placeholder="e.g. MySQL, MSSQL, PostgreSQL...">
+      <label class="field-label">Script</label>
+      <textarea id="oe2_script" placeholder="Write your SQL query here..."></textarea>
+    </div>
+
+    <div class="submit-wrap">
+      <p class="submit-note">Once submitted, your answers are final and cannot be changed. All responses are recorded.</p>
+      <button class="btn-sub" onclick="submitExam(false)">Submit Examination</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result">
+  <div class="result-card">
+    <div class="res-eyebrow">Examination Result</div>
+    <div class="res-score" id="scoreNum">—</div>
+    <div class="res-label" id="scoreLabel">Score</div>
+    <div class="res-name" id="resultName"></div>
+    <p class="res-sub">Information System Analyst III · TE — INFOSA III</p>
+    <div class="res-stats">
+      <div class="rs"><div class="rs-l">Correct (MC)</div><div class="rs-v" id="statCorrect">—</div></div>
+      <div class="rs"><div class="rs-l">Total MC Items</div><div class="rs-v">25</div></div>
+      <div class="rs"><div class="rs-l">MC Score</div><div class="rs-v" id="statMC">—</div></div>
+      <div class="rs"><div class="rs-l">Open-Ended</div><div class="rs-v">For review</div></div>
+    </div>
+    <div class="res-msg" id="resultMsg"></div>
+    <div class="res-footer">📧 Results recorded · HR Admin will be notified</div>
+  </div>
+</div>
+
+<script>
+const ANSWER_KEY = {
+  q1:'C', q2:'D', q3:'B', q4:'A', q5:'B',
+  q6:'D', q7:'B', q8:'A', q9:'B', q10:'C',
+  q11:'C', q12:'A', q13:'B', q14:'D', q15:'B',
+  q16:'C', q17:'B', q18:'A', q19:'B', q20:'C',
+  q21:'C', q22:'B', q23:'C', q24:'B', q25:'A'
+};
+
+let warnCount = 0, examActive = false, candidateName = '';
+
+function startExam() {
+  const name = document.getElementById('examName').value.trim();
+  if (!name) { alert('Please enter your full name before starting.'); return; }
+  candidateName = name;
+  document.getElementById('headerName').textContent = name;
+  document.getElementById('cover').style.display = 'none';
+  document.getElementById('exam').style.display = 'flex';
+  examActive = true;
+  setupAntiCheat();
+  setupProgress();
+}
+
+function setupAntiCheat() {
+  document.addEventListener('visibilitychange', handleVis);
+  window.addEventListener('blur', handleBlur);
+}
+
+function handleVis() { if (!examActive) return; if (document.hidden) triggerWarn(); }
+function handleBlur() { if (!examActive) return; triggerWarn(); }
+
+function triggerWarn() {
+  warnCount++;
+  document.getElementById('warn-badge').textContent = `Violations: ${warnCount} / 3`;
+  const t = document.getElementById('toast');
+  t.textContent = `⚠ Tab switch detected — Violation ${warnCount} of 3`;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+  if (warnCount >= 3) {
+    examActive = false;
+    document.removeEventListener('visibilitychange', handleVis);
+    window.removeEventListener('blur', handleBlur);
+    document.getElementById('overlay').style.display = 'flex';
+    setTimeout(() => submitExam(true), 2800);
+  }
+}
+
+function setupProgress() {
+  document.querySelectorAll('#exam input[type=radio]').forEach(r => r.addEventListener('change', updateProg));
+}
+
+function updateProg() {
+  let answered = 0;
+  for (let i = 1; i <= 25; i++) {
+    if (document.querySelector(`input[name=q${i}]:checked`)) {
+      answered++;
+      const card = document.getElementById(`qc${i}`);
+      if (card) card.classList.add('answered');
+    }
+  }
+  document.getElementById('progFill').style.width = (answered / 25 * 100) + '%';
+}
+
+function submitExam(forced) {
+  if (!forced) {
+    const missing = [];
+    for (let i = 1; i <= 25; i++) {
+      if (!document.querySelector(`input[name=q${i}]:checked`)) missing.push(i);
+    }
+    if (missing.length > 0) {
+      if (!confirm(`${missing.length} question(s) unanswered. Submit anyway?`)) return;
+    }
+  }
+  examActive = false;
+  let correct = 0;
+  for (const [q, ans] of Object.entries(ANSWER_KEY)) {
+    const sel = document.querySelector(`input[name=${q}]:checked`);
+    if (sel && sel.value === ans) correct++;
+  }
+
+  const payload = {
+    exam: 'TE - INFOSA III',
+    candidate: candidateName,
+    timestamp: new Date().toLocaleString('en-PH', {timeZone:'Asia/Manila'}),
+    mc_correct: correct,
+    mc_total: 25,
+    mc_score: correct,
+    forced_submit: forced,
+    tab_violations: warnCount,
+    open_ended: {
+      q26_lang: document.getElementById('oe1_lang').value,
+      q26_script: document.getElementById('oe1_script').value,
+      q27_db: document.getElementById('oe2_db').value,
+      q27_script: document.getElementById('oe2_script').value,
+    }
+  };
+
+  sendToSheets(payload);
+  showResult(correct, forced);
+}
+
+// 🔧 SETUP: Replace this URL with your Google Apps Script Web App URL
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzubSi9ev0wP1F2gPId75Dd-0p4TIg2NPrkowlLRbwyqCjHUBqsBYeRwYBOhpvkbBxYog/exec';
+
+function sendToSheets(data) {
+  if (SHEET_URL === 'https://script.google.com/macros/s/AKfycbzubSi9ev0wP1F2gPId75Dd-0p4TIg2NPrkowlLRbwyqCjHUBqsBYeRwYBOhpvkbBxYog/exec') {
+    console.log('[DEV] Configure SHEET_URL:', JSON.stringify(data, null, 2));
+    return;
+  }
+  fetch(SHEET_URL, {
+    method:'POST', mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(data)
+  }).catch(e => console.error(e));
+}
+
+function showResult(correct, forced) {
+  document.getElementById('exam').style.display = 'none';
+  document.getElementById('overlay').style.display = 'none';
+  document.getElementById('result').style.display = 'flex';
+  const pct = Math.round((correct / 25) * 100);
+  const pass = pct >= 75;
+  const num = document.getElementById('scoreNum');
+  num.textContent = pct + '%';
+  num.className = 'res-score ' + (pass ? 'pass' : 'fail');
+  document.getElementById('scoreLabel').textContent = pass ? 'PASSED' : 'FAILED';
+  document.getElementById('resultName').textContent = candidateName;
+  document.getElementById('statCorrect').textContent = correct + ' / 25';
+  document.getElementById('statMC').textContent = correct + ' pts';
+  document.getElementById('resultMsg').textContent = forced
+    ? 'Your exam was auto-submitted due to tab violations. Open-ended questions will be reviewed by HR.'
+    : 'Multiple-choice answers have been scored automatically. Open-ended questions will be reviewed separately by HR Administration.';
+}
+</script>
+</body>
+</html>

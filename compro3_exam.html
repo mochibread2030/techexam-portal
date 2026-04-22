@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TE — Computer Programmer III | Online Exam</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e2d45;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+    --success: #10b981;
+    --text: #e2e8f0;
+    --text-muted: #64748b;
+    --mono: 'Space Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:var(--sans); min-height:100vh; }
+  
+  /* COVER SCREEN */
+  #cover {
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background: radial-gradient(ellipse at 30% 50%, #0d1f3c 0%, var(--bg) 70%);
+    padding:2rem;
+  }
+  .cover-box {
+    max-width:520px; width:100%;
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:16px; padding:3rem 2.5rem;
+    box-shadow:0 0 60px rgba(0,212,255,0.08);
+  }
+  .cover-tag {
+    font-family:var(--mono); font-size:.65rem; letter-spacing:.2em;
+    color:var(--accent); text-transform:uppercase; margin-bottom:1.5rem;
+    display:flex; align-items:center; gap:.5rem;
+  }
+  .cover-tag::before { content:''; width:32px; height:1px; background:var(--accent); }
+  .cover-title { font-size:1.75rem; font-weight:600; line-height:1.2; margin-bottom:.5rem; }
+  .cover-sub { color:var(--text-muted); font-size:.9rem; margin-bottom:2rem; }
+  .cover-info {
+    background:var(--surface2); border-radius:8px; padding:1rem 1.25rem;
+    margin-bottom:1.75rem; font-size:.85rem; color:var(--text-muted);
+  }
+  .cover-info p { margin-bottom:.4rem; display:flex; align-items:center; gap:.5rem; }
+  .cover-info p:last-child { margin-bottom:0; }
+  .dot { width:6px; height:6px; border-radius:50%; background:var(--accent); flex-shrink:0; }
+  label { display:block; font-size:.8rem; font-weight:500; color:var(--text-muted); 
+          letter-spacing:.05em; text-transform:uppercase; margin-bottom:.5rem; }
+  .input-wrap { position:relative; margin-bottom:1.5rem; }
+  input[type=text] {
+    width:100%; padding:.85rem 1rem; background:var(--surface2);
+    border:1px solid var(--border); border-radius:8px; color:var(--text);
+    font-family:var(--sans); font-size:.95rem; transition:border-color .2s;
+  }
+  input[type=text]:focus { outline:none; border-color:var(--accent); }
+  .btn-start {
+    width:100%; padding:1rem; background:var(--accent);
+    border:none; border-radius:8px; color:#0a0e1a;
+    font-family:var(--mono); font-size:.85rem; font-weight:700;
+    letter-spacing:.1em; cursor:pointer; text-transform:uppercase;
+    transition:all .2s;
+  }
+  .btn-start:hover { background:#33dcff; transform:translateY(-1px); }
+
+  /* EXAM SCREEN */
+  #exam { display:none; min-height:100vh; flex-direction:column; }
+  
+  .exam-header {
+    position:sticky; top:0; z-index:100;
+    background:rgba(10,14,26,.95); backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border); padding:0 2rem;
+    display:flex; align-items:center; justify-content:space-between;
+    height:56px;
+  }
+  .exam-title { font-family:var(--mono); font-size:.75rem; color:var(--accent); letter-spacing:.1em; }
+  .exam-meta { display:flex; align-items:center; gap:1.5rem; }
+  .candidate-name { font-size:.8rem; color:var(--text-muted); }
+  #warn-count {
+    font-family:var(--mono); font-size:.7rem; padding:.25rem .6rem;
+    border-radius:20px; background:rgba(245,158,11,.15); color:var(--warn);
+    border:1px solid rgba(245,158,11,.3);
+  }
+  .progress-bar {
+    height:2px; background:var(--border);
+  }
+  .progress-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width .3s; }
+
+  .exam-body { flex:1; max-width:800px; margin:0 auto; padding:2.5rem 2rem; width:100%; }
+  
+  /* SECTION HEADERS */
+  .section-header {
+    font-family:var(--mono); font-size:.65rem; letter-spacing:.2em;
+    color:var(--accent); text-transform:uppercase; margin:2.5rem 0 1.5rem;
+    display:flex; align-items:center; gap:.75rem;
+  }
+  .section-header::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* QUESTIONS */
+  .q-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:1.75rem; margin-bottom:1rem;
+    transition:border-color .2s;
+  }
+  .q-card.answered { border-color:rgba(0,212,255,.25); }
+  .q-num {
+    font-family:var(--mono); font-size:.65rem; color:var(--text-muted);
+    margin-bottom:.75rem; letter-spacing:.1em;
+  }
+  .q-text { font-size:.95rem; line-height:1.6; margin-bottom:1.25rem; }
+  .q-code {
+    background:#0d1117; border:1px solid var(--border); border-radius:8px;
+    padding:1rem 1.25rem; font-family:var(--mono); font-size:.78rem;
+    color:#79c0ff; line-height:1.7; margin-bottom:1.25rem; overflow-x:auto;
+    white-space:pre;
+  }
+  .options { display:flex; flex-direction:column; gap:.5rem; }
+  .opt-label {
+    display:flex; align-items:flex-start; gap:.75rem;
+    padding:.7rem .9rem; border-radius:8px;
+    border:1px solid var(--border); cursor:pointer;
+    transition:all .15s; font-size:.9rem;
+  }
+  .opt-label:hover { background:var(--surface2); border-color:rgba(0,212,255,.3); }
+  .opt-label input { display:none; }
+  .opt-marker {
+    width:18px; height:18px; border-radius:50%; border:2px solid var(--border);
+    flex-shrink:0; margin-top:1px; display:flex; align-items:center; justify-content:center;
+    transition:all .15s;
+  }
+  .opt-label:has(input:checked) { background:rgba(0,212,255,.08); border-color:var(--accent); }
+  .opt-label:has(input:checked) .opt-marker {
+    border-color:var(--accent); background:var(--accent);
+  }
+  .opt-label:has(input:checked) .opt-marker::after {
+    content:''; width:6px; height:6px; border-radius:50%; background:#0a0e1a;
+  }
+
+  /* OPEN ENDED */
+  .open-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:1.75rem; margin-bottom:1rem;
+  }
+  .open-card h4 { font-size:.95rem; line-height:1.6; margin-bottom:.75rem; }
+  .open-card .pts { font-family:var(--mono); font-size:.65rem; color:var(--accent); }
+  .open-card textarea {
+    width:100%; min-height:100px; background:var(--surface2);
+    border:1px solid var(--border); border-radius:8px; color:var(--text);
+    font-family:var(--mono); font-size:.8rem; padding:.85rem 1rem;
+    resize:vertical; margin-top:.75rem;
+  }
+  .open-card textarea:focus { outline:none; border-color:var(--accent); }
+  .open-card input[type=text] { margin-top:.5rem; }
+
+  /* SELF-ASSESSMENT */
+  .assess-grid {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; overflow:hidden; margin-bottom:1rem;
+  }
+  .assess-grid table { width:100%; border-collapse:collapse; font-size:.82rem; }
+  .assess-grid th {
+    background:var(--surface2); padding:.65rem .5rem;
+    font-family:var(--mono); font-size:.6rem; letter-spacing:.05em;
+    color:var(--text-muted); text-align:center; border-bottom:1px solid var(--border);
+  }
+  .assess-grid th:first-child { text-align:left; padding-left:1rem; }
+  .assess-grid td { padding:.5rem; text-align:center; border-bottom:1px solid rgba(30,45,69,.5); }
+  .assess-grid td:first-child { text-align:left; padding-left:1rem; color:var(--text-muted); }
+  .assess-grid tr:last-child td { border-bottom:none; }
+  .assess-grid input[type=radio] { accent-color:var(--accent); transform:scale(1.1); }
+
+  /* SUBMIT */
+  .submit-section { padding:2rem 0; border-top:1px solid var(--border); margin-top:2rem; }
+  .submit-info { font-size:.85rem; color:var(--text-muted); margin-bottom:1.25rem; }
+  .btn-submit {
+    padding:.9rem 2.5rem; background:var(--accent2);
+    border:none; border-radius:8px; color:#fff;
+    font-family:var(--mono); font-size:.8rem; font-weight:700;
+    letter-spacing:.1em; cursor:pointer; text-transform:uppercase;
+    transition:all .2s;
+  }
+  .btn-submit:hover { background:#6d28d9; transform:translateY(-1px); }
+
+  /* RESULT SCREEN */
+  #result {
+    display:none; min-height:100vh;
+    background: radial-gradient(ellipse at 70% 30%, #0d1f3c 0%, var(--bg) 70%);
+    align-items:center; justify-content:center; padding:2rem;
+  }
+  .result-box {
+    max-width:540px; width:100%;
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:16px; padding:3rem 2.5rem; text-align:center;
+  }
+  .score-ring {
+    width:120px; height:120px; border-radius:50%; margin:0 auto 1.5rem;
+    border:4px solid var(--border); display:flex; align-items:center; justify-content:center;
+    position:relative;
+  }
+  .score-ring.pass { border-color:var(--success); box-shadow:0 0 30px rgba(16,185,129,.2); }
+  .score-ring.fail { border-color:var(--danger); box-shadow:0 0 30px rgba(239,68,68,.2); }
+  .score-num { font-family:var(--mono); font-size:2rem; font-weight:700; }
+  .score-num.pass { color:var(--success); }
+  .score-num.fail { color:var(--danger); }
+  .result-name { font-size:1.25rem; font-weight:600; margin-bottom:.4rem; }
+  .result-sub { color:var(--text-muted); font-size:.85rem; margin-bottom:1.5rem; }
+  .result-stats {
+    display:grid; grid-template-columns:1fr 1fr; gap:.75rem; margin-bottom:2rem;
+  }
+  .stat-item { background:var(--surface2); border-radius:8px; padding:.9rem; }
+  .stat-label { font-size:.7rem; color:var(--text-muted); margin-bottom:.25rem; text-transform:uppercase; letter-spacing:.05em; }
+  .stat-val { font-family:var(--mono); font-size:1.1rem; font-weight:700; }
+  .result-msg { font-size:.85rem; color:var(--text-muted); line-height:1.6; }
+
+  /* OVERLAY */
+  #overlay {
+    display:none; position:fixed; inset:0; z-index:999;
+    background:rgba(10,14,26,.97); align-items:center; justify-content:center;
+    flex-direction:column; text-align:center; padding:2rem;
+  }
+  .overlay-icon { font-size:3rem; margin-bottom:1rem; }
+  .overlay-title { font-family:var(--mono); font-size:1.1rem; font-weight:700; 
+                   color:var(--danger); margin-bottom:.75rem; }
+  .overlay-msg { color:var(--text-muted); font-size:.9rem; line-height:1.6; max-width:400px; }
+
+  /* TOAST */
+  #toast {
+    position:fixed; top:70px; left:50%; transform:translateX(-50%);
+    background:rgba(245,158,11,.15); border:1px solid rgba(245,158,11,.4);
+    color:var(--warn); padding:.6rem 1.25rem; border-radius:8px;
+    font-family:var(--mono); font-size:.75rem; z-index:500;
+    opacity:0; transition:opacity .3s; pointer-events:none;
+  }
+  #toast.show { opacity:1; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div id="cover">
+  <div class="cover-box">
+    <div class="cover-tag">Technical Examination</div>
+    <h1 class="cover-title">Computer Programmer III</h1>
+    <p class="cover-sub">TE — COMPRO III &nbsp;|&nbsp; Online Assessment</p>
+    <div class="cover-info">
+      <p><span class="dot"></span>20 multiple-choice questions (1 pt each)</p>
+      <p><span class="dot"></span>4 open-ended / coding questions (5 pts each)</p>
+      <p><span class="dot"></span>Self-assessment checklist</p>
+      <p><span class="dot"></span>Tab switching is monitored — 3 violations = auto-submit</p>
+    </div>
+    <label for="examName">Full Name (Last, First, Middle)</label>
+    <div class="input-wrap">
+      <input type="text" id="examName" placeholder="e.g. Dela Cruz, Juan A." autocomplete="off">
+    </div>
+    <button class="btn-start" onclick="startExam()">Begin Examination →</button>
+  </div>
+</div>
+
+<!-- WARNING TOAST -->
+<div id="toast">⚠ TAB SWITCH DETECTED</div>
+
+<!-- OVERLAY (auto-submit) -->
+<div id="overlay">
+  <div class="overlay-icon">🚫</div>
+  <div class="overlay-title">EXAM TERMINATED</div>
+  <div class="overlay-msg">You have exceeded the maximum number of tab/window switches. Your exam has been automatically submitted.</div>
+</div>
+
+<!-- EXAM -->
+<div id="exam">
+  <header class="exam-header">
+    <span class="exam-title">TE — COMPRO III</span>
+    <div class="exam-meta">
+      <span class="candidate-name" id="headerName"></span>
+      <span id="warn-count">Warnings: 0 / 3</span>
+    </div>
+  </header>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+  <div class="exam-body">
+
+    <div class="section-header">Part I — Multiple Choice &nbsp;(20 items × 1 pt)</div>
+
+    <!-- Q1 -->
+    <div class="q-card" id="qc1">
+      <div class="q-num">QUESTION 01</div>
+      <div class="q-text">Every C# statement is terminated by ___.</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q1" value="A"><span class="opt-marker"></span>A. Colon ( : )</label>
+        <label class="opt-label"><input type="radio" name="q1" value="B"><span class="opt-marker"></span>B. Semicolon ( ; )</label>
+        <label class="opt-label"><input type="radio" name="q1" value="C"><span class="opt-marker"></span>C. Comma ( , )</label>
+        <label class="opt-label"><input type="radio" name="q1" value="D"><span class="opt-marker"></span>D. Curly brace ( } )</label>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-card" id="qc2">
+      <div class="q-num">QUESTION 02</div>
+      <div class="q-text">Which data type is used to store a text value in C#?</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q2" value="A"><span class="opt-marker"></span>A. text</label>
+        <label class="opt-label"><input type="radio" name="q2" value="B"><span class="opt-marker"></span>B. txt</label>
+        <label class="opt-label"><input type="radio" name="q2" value="C"><span class="opt-marker"></span>C. string</label>
+        <label class="opt-label"><input type="radio" name="q2" value="D"><span class="opt-marker"></span>D. str</label>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-card" id="qc3">
+      <div class="q-num">QUESTION 03</div>
+      <div class="q-text">Which is <em>NOT</em> a valid C# data type?</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q3" value="A"><span class="opt-marker"></span>A. long</label>
+        <label class="opt-label"><input type="radio" name="q3" value="B"><span class="opt-marker"></span>B. int</label>
+        <label class="opt-label"><input type="radio" name="q3" value="C"><span class="opt-marker"></span>C. float</label>
+        <label class="opt-label"><input type="radio" name="q3" value="D"><span class="opt-marker"></span>D. complex</label>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="q-card" id="qc4">
+      <div class="q-num">QUESTION 04</div>
+      <div class="q-text">What will be the output of the following C# code?</div>
+      <div class="q-code">using System;
+namespace MyApplication {
+  class Program {
+    static void Main(string[] args) {
+      bool x = !( 500 == 500 );
+      Console.Write(x.ToString().ToUpper());
+    }
+  }
+}</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q4" value="A"><span class="opt-marker"></span>A. Error</label>
+        <label class="opt-label"><input type="radio" name="q4" value="B"><span class="opt-marker"></span>B. FALSE</label>
+        <label class="opt-label"><input type="radio" name="q4" value="C"><span class="opt-marker"></span>C. true</label>
+        <label class="opt-label"><input type="radio" name="q4" value="D"><span class="opt-marker"></span>D. TRUE</label>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="q-card" id="qc5">
+      <div class="q-num">QUESTION 05</div>
+      <div class="q-text">What will be the output of the following C# code?</div>
+      <div class="q-code">using System;
+namespace MyApplication {
+  class Program {
+    static void Main(string[] args) {
+      double x = 20.59 / 2;
+      Console.Write(Convert.ToInt32(x));
+    }
+  }
+}</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q5" value="A"><span class="opt-marker"></span>A. 10.30</label>
+        <label class="opt-label"><input type="radio" name="q5" value="B"><span class="opt-marker"></span>B. 10.295</label>
+        <label class="opt-label"><input type="radio" name="q5" value="C"><span class="opt-marker"></span>C. 10</label>
+        <label class="opt-label"><input type="radio" name="q5" value="D"><span class="opt-marker"></span>D. Error</label>
+      </div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="q-card" id="qc6">
+      <div class="q-num">QUESTION 06</div>
+      <div class="q-text">Which String class operator is used to determine whether two specified strings have <em>different</em> values?</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q6" value="A"><span class="opt-marker"></span>A. !=</label>
+        <label class="opt-label"><input type="radio" name="q6" value="B"><span class="opt-marker"></span>B. !</label>
+        <label class="opt-label"><input type="radio" name="q6" value="C"><span class="opt-marker"></span>C. ~</label>
+        <label class="opt-label"><input type="radio" name="q6" value="D"><span class="opt-marker"></span>D. ==</label>
+      </div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="q-card" id="qc7">
+      <div class="q-num">QUESTION 07</div>
+      <div class="q-text">What will be the output of the following C# code?</div>
+      <div class="q-code">using System;
+class Program {
+  static void Main(string[] args) {
+    int j = 35 % 4;
+    Console.WriteLine( j );
+  }
+}</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q7" value="A"><span class="opt-marker"></span>A. 8</label>
+        <label class="opt-label"><input type="radio" name="q7" value="B"><span class="opt-marker"></span>B. 140</label>
+        <label class="opt-label"><input type="radio" name="q7" value="C"><span class="opt-marker"></span>C. 8.75</label>
+        <label class="opt-label"><input type="radio" name="q7" value="D"><span class="opt-marker"></span>D. 3</label>
+      </div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="q-card" id="qc8">
+      <div class="q-num">QUESTION 08</div>
+      <div class="q-text">Which of these is a valid path declaration in C#?</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q8" value="A"><span class="opt-marker"></span>A. string strPath="c:\\ \\abc.txt";</label>
+        <label class="opt-label"><input type="radio" name="q8" value="B"><span class="opt-marker"></span>B. string strPath=@"c:\abc.txt";</label>
+        <label class="opt-label"><input type="radio" name="q8" value="C"><span class="opt-marker"></span>C. string strPath="c:/abc.txt";</label>
+        <label class="opt-label"><input type="radio" name="q8" value="D"><span class="opt-marker"></span>D. All of the above</label>
+      </div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="q-card" id="qc9">
+      <div class="q-num">QUESTION 09</div>
+      <div class="q-text">What is the statement called that is used to replace multiple 'if' statements?</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q9" value="A"><span class="opt-marker"></span>A. The nested if statement</label>
+        <label class="opt-label"><input type="radio" name="q9" value="B"><span class="opt-marker"></span>B. The end if statement</label>
+        <label class="opt-label"><input type="radio" name="q9" value="C"><span class="opt-marker"></span>C. The switch case statement</label>
+        <label class="opt-label"><input type="radio" name="q9" value="D"><span class="opt-marker"></span>D. The while statement</label>
+      </div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="q-card" id="qc10">
+      <div class="q-num">QUESTION 10</div>
+      <div class="q-text">Which file contains configuration info for each unique URI resource used in an ASP.NET project?</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q10" value="A"><span class="opt-marker"></span>A. web.config</label>
+        <label class="opt-label"><input type="radio" name="q10" value="B"><span class="opt-marker"></span>B. global.asax</label>
+        <label class="opt-label"><input type="radio" name="q10" value="C"><span class="opt-marker"></span>C. webapplication.vsdisco</label>
+        <label class="opt-label"><input type="radio" name="q10" value="D"><span class="opt-marker"></span>D. configuration.uri</label>
+      </div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="q-card" id="qc11">
+      <div class="q-num">QUESTION 11</div>
+      <div class="q-text">How many web.config files can there be in an ASP.NET application?</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q11" value="A"><span class="opt-marker"></span>A. Only one</label>
+        <label class="opt-label"><input type="radio" name="q11" value="B"><span class="opt-marker"></span>B. More than one</label>
+        <label class="opt-label"><input type="radio" name="q11" value="C"><span class="opt-marker"></span>C. Only two</label>
+        <label class="opt-label"><input type="radio" name="q11" value="D"><span class="opt-marker"></span>D. Up to ten</label>
+      </div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="q-card" id="qc12">
+      <div class="q-num">QUESTION 12</div>
+      <div class="q-text">Which jQuery method gets a set of elements containing the unique <em>previous siblings</em> of each element in the matched set?</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q12" value="A"><span class="opt-marker"></span>A. parents(selector)</label>
+        <label class="opt-label"><input type="radio" name="q12" value="B"><span class="opt-marker"></span>B. prev(selector)</label>
+        <label class="opt-label"><input type="radio" name="q12" value="C"><span class="opt-marker"></span>C. siblings(selector)</label>
+        <label class="opt-label"><input type="radio" name="q12" value="D"><span class="opt-marker"></span>D. above(selector)</label>
+      </div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="q-card" id="qc13">
+      <div class="q-num">QUESTION 13</div>
+      <div class="q-text">In jQuery, how do you send data using HTTP POST?</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q13" value="A"><span class="opt-marker"></span>A. $.post(url, data, callback, type)</label>
+        <label class="opt-label"><input type="radio" name="q13" value="B"><span class="opt-marker"></span>B. $.http('POST', url, data, callback, type)</label>
+        <label class="opt-label"><input type="radio" name="q13" value="C"><span class="opt-marker"></span>C. $.get(url, data, callback, type)</label>
+        <label class="opt-label"><input type="radio" name="q13" value="D"><span class="opt-marker"></span>D. $.remote(url, data, callback, type='post')</label>
+      </div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="q-card" id="qc14">
+      <div class="q-num">QUESTION 14</div>
+      <div class="q-text">In jQuery, how do you select the first &lt;span&gt; on the page that has the class 'green'?</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q14" value="A"><span class="opt-marker"></span>A. $('span, .green, :first')</label>
+        <label class="opt-label"><input type="radio" name="q14" value="B"><span class="opt-marker"></span>B. $('first .green span')</label>
+        <label class="opt-label"><input type="radio" name="q14" value="C"><span class="opt-marker"></span>C. $('span.green:first')</label>
+        <label class="opt-label"><input type="radio" name="q14" value="D"><span class="opt-marker"></span>D. $('green: first-span')</label>
+      </div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="q-card" id="qc15">
+      <div class="q-num">QUESTION 15</div>
+      <div class="q-text">In jQuery, how do you highlight a page element under the mouse cursor?</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q15" value="A"><span class="opt-marker"></span>A. .hover()</label>
+        <label class="opt-label"><input type="radio" name="q15" value="B"><span class="opt-marker"></span>B. .mouse-under("highlight")</label>
+        <label class="opt-label"><input type="radio" name="q15" value="C"><span class="opt-marker"></span>C. .toggle()</label>
+        <label class="opt-label"><input type="radio" name="q15" value="D"><span class="opt-marker"></span>D. .highlight("cursor")</label>
+      </div>
+    </div>
+
+    <!-- Q16 -->
+    <div class="q-card" id="qc16">
+      <div class="q-num">QUESTION 16</div>
+      <div class="q-text">In HTML, which property is used to show a text label for an image link?</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q16" value="A"><span class="opt-marker"></span>A. alternative</label>
+        <label class="opt-label"><input type="radio" name="q16" value="B"><span class="opt-marker"></span>B. alt</label>
+        <label class="opt-label"><input type="radio" name="q16" value="C"><span class="opt-marker"></span>C. str</label>
+        <label class="opt-label"><input type="radio" name="q16" value="D"><span class="opt-marker"></span>D. text-label</label>
+      </div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="q-card" id="qc17">
+      <div class="q-num">QUESTION 17</div>
+      <div class="q-text">In CSS, how do you make text bold?</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q17" value="A"><span class="opt-marker"></span>A. style: bold</label>
+        <label class="opt-label"><input type="radio" name="q17" value="B"><span class="opt-marker"></span>B. text: thick</label>
+        <label class="opt-label"><input type="radio" name="q17" value="C"><span class="opt-marker"></span>C. font-weight: bold</label>
+        <label class="opt-label"><input type="radio" name="q17" value="D"><span class="opt-marker"></span>D. text-weight: bold</label>
+      </div>
+    </div>
+
+    <!-- Q18 -->
+    <div class="q-card" id="qc18">
+      <div class="q-num">QUESTION 18</div>
+      <div class="q-text">In CSS, how do you display borders where: top=10px, left=20px, bottom=5px, right=1px?</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q18" value="A"><span class="opt-marker"></span>A. border-width: 10px 5px 20px 1px;</label>
+        <label class="opt-label"><input type="radio" name="q18" value="B"><span class="opt-marker"></span>B. border-width: 5px 20px 10px 1px;</label>
+        <label class="opt-label"><input type="radio" name="q18" value="C"><span class="opt-marker"></span>C. border-width: 10px 1px 5px 20px;</label>
+        <label class="opt-label"><input type="radio" name="q18" value="D"><span class="opt-marker"></span>D. border-width: 10px 20px 5px 1px;</label>
+      </div>
+    </div>
+
+    <!-- Q19 -->
+    <div class="q-card" id="qc19">
+      <div class="q-num">QUESTION 19</div>
+      <div class="q-text">Which is a correct CSS syntax?</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q19" value="A"><span class="opt-marker"></span>A. { body:color=black; }</label>
+        <label class="opt-label"><input type="radio" name="q19" value="B"><span class="opt-marker"></span>B. body:color=black;</label>
+        <label class="opt-label"><input type="radio" name="q19" value="C"><span class="opt-marker"></span>C. { body.color: black; }</label>
+        <label class="opt-label"><input type="radio" name="q19" value="D"><span class="opt-marker"></span>D. body { color: black; }</label>
+      </div>
+    </div>
+
+    <!-- Q20 -->
+    <div class="q-card" id="qc20">
+      <div class="q-num">QUESTION 20</div>
+      <div class="q-text">In CSS, how do you add a background color for all &lt;h1&gt; elements?</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q20" value="A"><span class="opt-marker"></span>A. h1 { background-color: #FFFFFF; }</label>
+        <label class="opt-label"><input type="radio" name="q20" value="B"><span class="opt-marker"></span>B. h1.all { background-color: #FFFFFF; }</label>
+        <label class="opt-label"><input type="radio" name="q20" value="C"><span class="opt-marker"></span>C. all.h1 { background-color: #FFFFFF; }</label>
+        <label class="opt-label"><input type="radio" name="q20" value="D"><span class="opt-marker"></span>D. h1 all { background-color: #FFFFFF; }</label>
+      </div>
+    </div>
+
+    <div class="section-header">Part II — Flowchart & SDLC &nbsp;(4 items × 1 pt)</div>
+
+    <div class="q-card" id="qc21">
+      <div class="q-num">QUESTION 21</div>
+      <div class="q-text">Which flowchart symbol is used to represent a decision-making step (e.g., an if statement)?</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q21" value="A"><span class="opt-marker"></span>A. Rectangle</label>
+        <label class="opt-label"><input type="radio" name="q21" value="B"><span class="opt-marker"></span>B. Oval</label>
+        <label class="opt-label"><input type="radio" name="q21" value="C"><span class="opt-marker"></span>C. Diamond</label>
+        <label class="opt-label"><input type="radio" name="q21" value="D"><span class="opt-marker"></span>D. Parallelogram</label>
+      </div>
+    </div>
+
+    <div class="q-card" id="qc22">
+      <div class="q-num">QUESTION 22</div>
+      <div class="q-text">In a flowchart, what does a parallelogram represent?</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q22" value="A"><span class="opt-marker"></span>A. Process/Action</label>
+        <label class="opt-label"><input type="radio" name="q22" value="B"><span class="opt-marker"></span>B. Start/End</label>
+        <label class="opt-label"><input type="radio" name="q22" value="C"><span class="opt-marker"></span>C. Input/Output</label>
+        <label class="opt-label"><input type="radio" name="q22" value="D"><span class="opt-marker"></span>D. Connection to another page</label>
+      </div>
+    </div>
+
+    <div class="q-card" id="qc23">
+      <div class="q-num">QUESTION 23</div>
+      <div class="q-text">During which phase of the SDLC is a "Feasibility Study" typically conducted?</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q23" value="A"><span class="opt-marker"></span>A. Implementation</label>
+        <label class="opt-label"><input type="radio" name="q23" value="B"><span class="opt-marker"></span>B. Maintenance</label>
+        <label class="opt-label"><input type="radio" name="q23" value="C"><span class="opt-marker"></span>C. Planning and Requirement Analysis</label>
+        <label class="opt-label"><input type="radio" name="q23" value="D"><span class="opt-marker"></span>D. Testing</label>
+      </div>
+    </div>
+
+    <div class="q-card" id="qc24">
+      <div class="q-num">QUESTION 24</div>
+      <div class="q-text">What is the purpose of a "Prototype" in the design phase?</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q24" value="A"><span class="opt-marker"></span>A. To serve as the final, shippable product.</label>
+        <label class="opt-label"><input type="radio" name="q24" value="B"><span class="opt-marker"></span>B. To provide a working model for users to test and refine requirements.</label>
+        <label class="opt-label"><input type="radio" name="q24" value="C"><span class="opt-marker"></span>C. To replace the need for documentation.</label>
+        <label class="opt-label"><input type="radio" name="q24" value="D"><span class="opt-marker"></span>D. To speed up the database indexing process.</label>
+      </div>
+    </div>
+
+    <div class="q-card" id="qc25">
+      <div class="q-num">QUESTION 25</div>
+      <div class="q-text">Which of the following is a primary benefit of using an "API-First" design approach?</div>
+      <div class="options">
+        <label class="opt-label"><input type="radio" name="q25" value="A"><span class="opt-marker"></span>A. It allows the front-end team to start developing using mock data before the back-end is finished.</label>
+        <label class="opt-label"><input type="radio" name="q25" value="B"><span class="opt-marker"></span>B. It ensures the database is designed before any interface requirements are gathered.</label>
+        <label class="opt-label"><input type="radio" name="q25" value="C"><span class="opt-marker"></span>C. It eliminates the need for any documentation like Swagger or RAML.</label>
+        <label class="opt-label"><input type="radio" name="q25" value="D"><span class="opt-marker"></span>D. It requires that all APIs be written in the same programming language.</label>
+      </div>
+    </div>
+
+    <div class="section-header">Part III — Open-Ended / Coding &nbsp;(4 items × 5 pts)</div>
+
+    <div class="open-card">
+      <div class="q-num">QUESTION 26 &nbsp;<span class="pts">5 pts</span></div>
+      <h4>Write a script that outputs a list of numbers from 5 to 985, excluding any numbers divisible by 10 (e.g., 10, 20, 30, etc.).</h4>
+      <label>Programming Language Used</label>
+      <input type="text" id="oe1_lang" placeholder="e.g. C#, Python, JavaScript...">
+      <label style="margin-top:.75rem">Script</label>
+      <textarea id="oe1_script" placeholder="Write your script here..."></textarea>
+    </div>
+
+    <div class="open-card">
+      <div class="q-num">QUESTION 27 &nbsp;<span class="pts">5 pts</span></div>
+      <h4>Write a SQL query that retrieves all data from the 'TBL_blogpost' table posted between February 1, 2025 and the end of the day on November 30, 2025.</h4>
+      <label>Database (specify MSSQL, MySQL, PostgreSQL, etc.)</label>
+      <input type="text" id="oe2_db" placeholder="e.g. MySQL, MSSQL, PostgreSQL...">
+      <label style="margin-top:.75rem">Script</label>
+      <textarea id="oe2_script" placeholder="Write your SQL query here..."></textarea>
+    </div>
+
+    <div class="open-card">
+      <div class="q-num">QUESTION 28 &nbsp;<span class="pts">5 pts</span></div>
+      <h4>Write an HTML &lt;div&gt; script using Bootstrap 5 that displays two boxes side by side: the first box is 1/3 of total width (text-1 in blue, centered), and the second box is 2/3 of total width (text-2 in red, right-aligned). Screen size: medium. Apply: <code style="font-size:.75rem;color:#79c0ff">&lt;style&gt; div:not(.row) { border: 1px solid black; } &lt;/style&gt;</code></h4>
+      <label>Script</label>
+      <textarea id="oe3_script" placeholder="Write your Bootstrap 5 HTML here..." style="min-height:120px;"></textarea>
+    </div>
+
+    <div class="open-card">
+      <div class="q-num">QUESTION 29 &nbsp;<span class="pts">5 pts</span></div>
+      <h4>Write a CSS script that styles all anchor tags inside a div with id="EXAM": font size 30pt, bold, italic, red color, no underline.</h4>
+      <label>Script (inside &lt;style&gt; tags)</label>
+      <textarea id="oe4_script" placeholder="Write your CSS here..."></textarea>
+    </div>
+
+    <div class="section-header">Part IV — Self-Assessment Checklist</div>
+    <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1rem;">
+      Put one check mark per programming language based on your level of understanding.<br>
+      <strong style="color:var(--text)">A</strong> – Never heard of it &nbsp;|&nbsp;
+      <strong style="color:var(--text)">B</strong> – Heard of, not understood &nbsp;|&nbsp;
+      <strong style="color:var(--text)">C</strong> – Basic understanding &nbsp;|&nbsp;
+      <strong style="color:var(--text)">D</strong> – Can develop with minimal research &nbsp;|&nbsp;
+      <strong style="color:var(--text)">E</strong> – Can develop, install & deploy independently
+    </p>
+    <div class="assess-grid">
+      <table id="assessTable">
+        <thead>
+          <tr>
+            <th>Programming Language</th>
+            <th>A</th><th>B</th><th>C</th><th>D</th><th>E</th>
+          </tr>
+        </thead>
+        <tbody id="assessBody"></tbody>
+      </table>
+    </div>
+
+    <div class="submit-section">
+      <p class="submit-info">Once submitted, you cannot return to this exam. Ensure all answers are complete.</p>
+      <button class="btn-submit" onclick="submitExam(false)">Submit Examination</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result">
+  <div class="result-box">
+    <div class="score-ring" id="scoreRing">
+      <span class="score-num" id="scoreNum">—</span>
+    </div>
+    <div class="result-name" id="resultName"></div>
+    <div class="result-sub">Computer Programmer III | TE — COMPRO III</div>
+    <div class="result-stats">
+      <div class="stat-item"><div class="stat-label">Correct (MC)</div><div class="stat-val" id="statCorrect">—</div></div>
+      <div class="stat-item"><div class="stat-label">Total MC Items</div><div class="stat-val">25</div></div>
+      <div class="stat-item"><div class="stat-label">MC Score</div><div class="stat-val" id="statMC">—</div></div>
+      <div class="stat-item"><div class="stat-label">Open-Ended</div><div class="stat-val" id="statOE">For review</div></div>
+    </div>
+    <div class="result-msg" id="resultMsg"></div>
+    <p style="font-size:.75rem;color:var(--text-muted);margin-top:1.25rem;">📧 Results have been recorded. HR will be notified.</p>
+  </div>
+</div>
+
+<script>
+// ===== ANSWER KEY =====
+const ANSWER_KEY = {
+  q1:'B', q2:'C', q3:'D', q4:'B', q5:'C',
+  q6:'A', q7:'D', q8:'D', q9:'C', q10:'A',
+  q11:'B', q12:'B', q13:'A', q14:'C', q15:'A',
+  q16:'B', q17:'C', q18:'C', q19:'D', q20:'A',
+  q21:'C', q22:'C', q23:'C', q24:'B', q25:'A'
+};
+
+const LANGS = ['JavaScript','jQuery','HTML','CSS','Java','PHP','NodeJS','C/C++','C#','VB.Net','Django','Python','SQL (MS/My/Postgre)','TypeScript','Ruby','Go','Pearl','Swift'];
+
+let warnCount = 0;
+let examActive = false;
+let candidateName = '';
+
+// Build assessment table
+window.addEventListener('DOMContentLoaded', () => {
+  const tbody = document.getElementById('assessBody');
+  LANGS.forEach(lang => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${lang}</td>${['A','B','C','D','E'].map(l=>`<td><input type="radio" name="assess_${lang.replace(/\s|\/|\(|\)/g,'_')}" value="${l}"></td>`).join('')}`;
+    tbody.appendChild(tr);
+  });
+});
+
+function startExam() {
+  const name = document.getElementById('examName').value.trim();
+  if (!name) { alert('Please enter your full name before starting.'); return; }
+  candidateName = name;
+  document.getElementById('headerName').textContent = name;
+  document.getElementById('cover').style.display = 'none';
+  document.getElementById('exam').style.display = 'flex';
+  examActive = true;
+  setupAntiCheat();
+  setupProgress();
+}
+
+// ===== ANTI-CHEAT =====
+function setupAntiCheat() {
+  document.addEventListener('visibilitychange', handleVisibility);
+  window.addEventListener('blur', handleBlur);
+}
+
+function handleVisibility() {
+  if (!examActive) return;
+  if (document.hidden) triggerWarning();
+}
+
+function handleBlur() {
+  if (!examActive) return;
+  triggerWarning();
+}
+
+function triggerWarning() {
+  warnCount++;
+  document.getElementById('warn-count').textContent = `Warnings: ${warnCount} / 3`;
+  showToast();
+  if (warnCount >= 3) {
+    examActive = false;
+    document.removeEventListener('visibilitychange', handleVisibility);
+    window.removeEventListener('blur', handleBlur);
+    document.getElementById('overlay').style.display = 'flex';
+    setTimeout(() => submitExam(true), 2500);
+  }
+}
+
+function showToast() {
+  const t = document.getElementById('toast');
+  t.textContent = `⚠ TAB SWITCH DETECTED — Warning ${warnCount}/3`;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ===== PROGRESS =====
+function setupProgress() {
+  const radios = document.querySelectorAll('#exam input[type=radio]');
+  radios.forEach(r => r.addEventListener('change', updateProgress));
+  const texts = document.querySelectorAll('#exam textarea, #exam input[type=text]');
+  texts.forEach(t => t.addEventListener('input', updateProgress));
+}
+
+function updateProgress() {
+  const total = 25;
+  let answered = 0;
+  for (let i = 1; i <= 25; i++) {
+    const sel = document.querySelector(`input[name=q${i}]:checked`);
+    if (sel) { answered++; document.getElementById(`qc${i}`) && document.getElementById(`qc${i}`).classList.add('answered'); }
+  }
+  const pct = (answered / total) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+// ===== SUBMIT =====
+function submitExam(forced) {
+  if (!forced) {
+    const unanswered = [];
+    for (let i = 1; i <= 25; i++) {
+      if (!document.querySelector(`input[name=q${i}]:checked`)) unanswered.push(i);
+    }
+    if (unanswered.length > 0) {
+      const go = confirm(`You have ${unanswered.length} unanswered MC question(s). Submit anyway?`);
+      if (!go) return;
+    }
+  }
+  examActive = false;
+
+  // SCORE MC
+  let correct = 0;
+  for (const [q, ans] of Object.entries(ANSWER_KEY)) {
+    const sel = document.querySelector(`input[name=${q}]:checked`);
+    if (sel && sel.value === ans) correct++;
+  }
+  const mcScore = correct;
+  const totalMC = 25;
+
+  // COLLECT OPEN-ENDED
+  const oeData = {
+    q26_lang: document.getElementById('oe1_lang').value,
+    q26_script: document.getElementById('oe1_script').value,
+    q27_db: document.getElementById('oe2_db').value,
+    q27_script: document.getElementById('oe2_script').value,
+    q28_script: document.getElementById('oe3_script').value,
+    q29_script: document.getElementById('oe4_script').value,
+  };
+
+  // COLLECT SELF-ASSESSMENT
+  const assessData = {};
+  LANGS.forEach(lang => {
+    const key = lang.replace(/\s|\/|\(|\)/g,'_');
+    const sel = document.querySelector(`input[name=assess_${key}]:checked`);
+    assessData[lang] = sel ? sel.value : '';
+  });
+
+  const payload = {
+    exam: 'TE - COMPRO III',
+    candidate: candidateName,
+    timestamp: new Date().toLocaleString('en-PH', {timeZone:'Asia/Manila'}),
+    mc_correct: correct,
+    mc_total: totalMC,
+    mc_score: mcScore,
+    forced_submit: forced,
+    tab_violations: warnCount,
+    open_ended: oeData,
+    self_assessment: assessData
+  };
+
+  sendToGoogleSheets(payload);
+  showResult(correct, totalMC, forced);
+}
+
+// ===== GOOGLE SHEETS =====
+// 🔧 SETUP: Replace this URL with your Google Apps Script Web App URL
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzubSi9ev0wP1F2gPId75Dd-0p4TIg2NPrkowlLRbwyqCjHUBqsBYeRwYBOhpvkbBxYog/exec';
+
+function sendToGoogleSheets(data) {
+  if (SHEET_URL === 'https://script.google.com/macros/s/AKfycbzubSi9ev0wP1F2gPId75Dd-0p4TIg2NPrkowlLRbwyqCjHUBqsBYeRwYBOhpvkbBxYog/exec') {
+    console.log('[DEV] Exam payload (configure SHEET_URL):', JSON.stringify(data, null, 2));
+    return;
+  }
+  fetch(SHEET_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).catch(e => console.error('Sheet submission error:', e));
+}
+
+// ===== RESULT =====
+function showResult(correct, total, forced) {
+  document.getElementById('exam').style.display = 'none';
+  document.getElementById('overlay').style.display = 'none';
+  const res = document.getElementById('result');
+  res.style.display = 'flex';
+
+  const pct = Math.round((correct / total) * 100);
+  const ring = document.getElementById('scoreRing');
+  const num = document.getElementById('scoreNum');
+  const pass = pct >= 75;
+
+  ring.className = 'score-ring ' + (pass ? 'pass' : 'fail');
+  num.className = 'score-num ' + (pass ? 'pass' : 'fail');
+  num.textContent = pct + '%';
+
+  document.getElementById('resultName').textContent = candidateName;
+  document.getElementById('statCorrect').textContent = correct + ' / ' + total;
+  document.getElementById('statMC').textContent = correct + ' pts';
+
+  const msgs = {
+    pass: 'Your multiple-choice answers have been scored automatically. Open-ended questions will be reviewed separately by HR.',
+    fail: 'Your exam has been recorded. Open-ended questions will be reviewed by HR. ' + (forced ? 'Note: This exam was auto-submitted due to tab violations.' : '')
+  };
+  document.getElementById('resultMsg').textContent = msgs[pass ? 'pass' : 'fail'];
+}
+</script>
+</body>
+</html>
